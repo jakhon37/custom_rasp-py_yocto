@@ -44,13 +44,14 @@ git clone -b dunfell https://github.com/agherzan/meta-raspberrypi.git
 ```bash
 source poky/oe-init-build-env rpi-build 
 ```
-Replace `rpi-build` with your desired build directory name.
+Replace `rpi-build` with your desired build directory name. Mine is `rpi_yoct`
 
 ## Step 2: Configuring the Build
 
 ### 2.1. Local Configuration
 Check available images to build: 
 ```bash
+cd ..
 ls meta-raspberrypi/conf/machine
  
 include                  raspberrypi0.conf       raspberrypi3-64.conf  raspberrypi4.conf     raspberrypi.conf
@@ -59,7 +60,7 @@ raspberrypi0-2w.conf     raspberrypi2.conf       raspberrypi4-64.conf  raspberry
 ```
 Edit `conf/local.conf` using a text editor (e.g., nano, vi) to set machine and other parameters:
 ```bash
-vi conf/local.conf
+vi rpi_yoct/conf/local.conf
 ```
 Add or modify the following lines:
 ```plaintext
@@ -77,9 +78,9 @@ click Esc button to quit insert mode
 You can also customize other parameters like image size, license settings, etc.
 
 ### 2.2. bblayers Configuration
-Edit `conf/bblayers.conf` to add the paths of your custom layers:
+Edit `rpi_yoct/conf/bblayers.conf` to add the paths of your custom layers:
 ```bash
-vi conf/bblayers.conf
+vi rpi_yoct/conf/bblayers.conf
 ```
 Add the paths under `BBLAYERS`, e.g.:
 ```plaintext
@@ -123,7 +124,7 @@ meta-raspberrypi      /home/amrith/yocto/poky/build/meta-raspberrypi  9
 By default it writes only writes image in `<image-name>.wic.bz2` fromat. You can use `bmaptool` to copy image into sdcard. 
  If you want to create `<image-name>.rpi-sdimg` then you need to set in `conf/local.conf`
 ```bash
-vi conf/local.conf
+vi rpi_yoct/conf/local.conf
 i
 IMAGE_FSTYPES = "wic.bz2 rpi-sdimg"
 Esc
@@ -148,17 +149,17 @@ Insert the SD card into your development system and identify its device file usi
 
 ### 5.1 Check the created image
 ```bash
-ls tmp/deploy/images/raspberrypi4
+ls rpi_yoct/tmp/deploy/images/raspberrypi4
 ```
 you should see images like `<image-name>.wic.bz2` for bmaptool or `<image-name>.rpi-sdimg` for dd tool. In my case `rpi-test-image-raspberrypi4.tar.bz2`
 ### 5.1 Copy the Image Using `dd` or `bmaptool`
 For `dd`:
 ```bash
-sudo dd if=tmp/deploy/images/raspberrypi4/<image-name>.rpi-sdimg of=/dev/sdX bs=4M conv=fsync status=progress
+sudo dd if=rpi_yoct/tmp/deploy/images/raspberrypi4/<image-name>.rpi-sdimg of=/dev/sdX bs=4M conv=fsync status=progress
 ```
 For `bmaptool`:
 ```bash
-sudo bmaptool copy tmp/deploy/images/raspberrypi4/<image-name>.wic.bz2 /dev/sdX
+sudo bmaptool copy rpi_yoct/tmp/deploy/images/raspberrypi4/<image-name>.wic.bz2 /dev/sdX
 ```
 Replace `/dev/sdX` with your SD card device file. `bmaptool` can be more efficient. Both creates partitions in the sdcard defined by the image. 
 
